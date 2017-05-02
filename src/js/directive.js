@@ -164,8 +164,8 @@
 			}
 		};
 	}])
-	.directive('ngImageGallery', ['$rootScope', '$timeout', '$q', 'ngImageGalleryOpts',
-	function($rootScope, $timeout, $q, ngImageGalleryOpts){
+	.directive('ngImageGallery', ['$rootScope', '$timeout', '$q', 'ngImageGalleryOpts', '$animate',
+	function($rootScope, $timeout, $q, ngImageGalleryOpts, $animate){
 		return {
 			replace : true,
 			transclude : false,
@@ -237,7 +237,16 @@
 
 										// Images container
 										'<div class="galleria-images img-anim-{{imgAnim}} img-move-dir-{{_imgMoveDirection}}">'+
-											'<img class="galleria-image" ng-right-click ng-repeat="image in images track by image.id" ng-if="_activeImg == image" ng-src="{{image.url}}" ondragstart="return false;" ng-attr-alt="{{image.alt || undefined}}"/>'+
+											'<div ng-repeat="image in images track by image.id">'+
+											//image
+												'<img class="galleria-image" ng-right-click ng-if="_activeImg == image && !image.video" ng-src="{{image.url}}" ondragstart="return false;" ng-attr-alt="{{image.alt || undefined}}"/>'+
+											// Video
+												'<video class="galleria-image" preload="none" poster="{{image.url}}" controls ng-if="_activeImg == image && image.video">'+
+													'<source src="{{image.videoUrls.mp4}}" type="video/mp4" />'+
+													'<source src="{{image.videoUrls.webm}}" type="video/webm" />'+
+												'</video>'+
+												'<div class="playpause" ng-if="_activeImg == image && image.video" ng-click="_playPause()"><div><div></div></div></div>'+
+											'</div>'+
 										'</div>'+
 
 										// Image description container
@@ -378,7 +387,6 @@
 					scope._deleteImg = function(img){
 						var _deleteImgCallback = function(){
 							var index = scope.images.indexOf(img);
-							console.log(index);
 							scope.images.splice(index, 1);
 							scope._activeImageIndex = 0;
 
@@ -386,8 +394,22 @@
 						}
 
 						scope.onDelete({img: img, cb: _deleteImgCallback});
-					}
+					};
 
+					scope._playPause = function() {
+						var v = elem.find('video');
+
+						if(v[0].paused){
+							v[0].play();
+                            $animate.removeClass(v.next(), 'on');
+                            $animate.addClass(v.next(), 'off');
+						}else{
+							v[0].pause();
+                            $animate.removeClass(v.next(), 'off');
+                            $animate.addClass(v.next(), 'on');
+    					}
+
+					}
 
 					/***************************************************/
 
@@ -407,7 +429,7 @@
 						scope.thumbSize 	 = 	(conf.thumbSize 	!= undefined) ? conf.thumbSize 		: 	(scope.thumbSize 	!= undefined) 	?  scope.thumbSize		: 	ngImageGalleryOpts.thumbSize;
 						scope.inline 	 	 = 	(conf.inline 		!= undefined) ? conf.inline 	 	: 	(scope.inline 		!= undefined) 	?  scope.inline			: 	ngImageGalleryOpts.inline;
 						scope.bubbles 	 	 = 	(conf.bubbles 		!= undefined) ? conf.bubbles 	 	: 	(scope.bubbles 		!= undefined) 	?  scope.bubbles		: 	ngImageGalleryOpts.bubbles;
-						scope.bubbleSize 	 = 	(conf.bubbleSize 	!= undefined) ? conf.bubbleSize 	 : 	(scope.bubbleSize 	!= undefined) 	?  scope.bubbleSize		: 	ngImageGalleryOpts.bubbleSize;
+						scope.bubbleSize 	 = 	(conf.bubbleSize 	!= undefined) ? conf.bubbleSize 	: 	(scope.bubbleSize 	!= undefined) 	?  scope.bubbleSize		: 	ngImageGalleryOpts.bubbleSize;
 						scope.imgBubbles 	 = 	(conf.imgBubbles 	!= undefined) ? conf.imgBubbles 	: 	(scope.imgBubbles 	!= undefined) 	?  scope.imgBubbles		: 	ngImageGalleryOpts.imgBubbles;
 						scope.bgClose 	 	 = 	(conf.bgClose 		!= undefined) ? conf.bgClose 	 	: 	(scope.bgClose 		!= undefined) 	?  scope.bgClose		: 	ngImageGalleryOpts.bgClose;
 						scope.piracy 	 	 = 	(conf.piracy 		!= undefined) ? conf.piracy 	 	: 	(scope.piracy 		!= undefined) 	?  scope.piracy			: 	ngImageGalleryOpts.piracy;
