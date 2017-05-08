@@ -15,6 +15,7 @@
 		var defOpts = {
 			thumbnails  	:   true,
 			thumbSize		: 	80,
+			captions		:	false,
 			inline      	:   false,
 			bubbles     	:   true,
 			bubbleSize		: 	20,
@@ -177,6 +178,7 @@
 
 				thumbnails 		: 	'=?',		// true|false
 				thumbSize		: 	'=?', 		// px
+				captions		:	'=?',		// true|false
 				inline 			: 	'=?',		// true|false
 				bubbles 		: 	'=?',		// true|false
 				bubbleSize 		: 	'=?',		// px
@@ -195,9 +197,12 @@
 							// Thumbnails container
 							//  Hide for inline gallery
 							'<div ng-if="thumbnails && !inline" class="ng-image-gallery-thumbnails">' +
- 								'<div class="thumb" ng-repeat="image in images track by image.id" ng-click="methods.open($index);" show-image-async="{{image.thumbUrl || image.url}}" async-kind="thumb" ng-style="{\'width\' : thumbSize+\'px\', \'height\' : thumbSize+\'px\'}">'+
- 									'<div class="loader"></div>'+
- 								'</div>' +
+								'<div class="thumb-wrapper" ng-repeat="image in images track by image.id">' +
+									'<div class="thumb"  ng-click="methods.open($index);" show-image-async="{{image.thumbUrl || image.url}}" async-kind="thumb" ng-style="{\'width\' : thumbSize+\'px\', \'height\' : thumbSize+\'px\'}">'+
+										'<div class="loader"></div>'+
+									'</div>' +
+									'<span ng-show="captions" class="caption">Figure {{image.id}}</span>' +
+								'</div>' +
  							'</div>' +
 
 							// Modal container
@@ -427,7 +432,8 @@
 					scope.$watchCollection('conf', function(conf){
 						scope.thumbnails 	 = 	(conf.thumbnails 	!= undefined) ? conf.thumbnails 	: 	(scope.thumbnails 	!= undefined) 	?  scope.thumbnails		: 	ngImageGalleryOpts.thumbnails;
 						scope.thumbSize 	 = 	(conf.thumbSize 	!= undefined) ? conf.thumbSize 		: 	(scope.thumbSize 	!= undefined) 	?  scope.thumbSize		: 	ngImageGalleryOpts.thumbSize;
-						scope.inline 	 	 = 	(conf.inline 		!= undefined) ? conf.inline 	 	: 	(scope.inline 		!= undefined) 	?  scope.inline			: 	ngImageGalleryOpts.inline;
+                        scope.captions 	 	 = 	(conf.captions 	    != undefined) ? conf.captions 		: 	(scope.captions 	!= undefined) 	?  scope.captions		: 	ngImageGalleryOpts.captions;
+                        scope.inline 	 	 = 	(conf.inline 		!= undefined) ? conf.inline 	 	: 	(scope.inline 		!= undefined) 	?  scope.inline			: 	ngImageGalleryOpts.inline;
 						scope.bubbles 	 	 = 	(conf.bubbles 		!= undefined) ? conf.bubbles 	 	: 	(scope.bubbles 		!= undefined) 	?  scope.bubbles		: 	ngImageGalleryOpts.bubbles;
 						scope.bubbleSize 	 = 	(conf.bubbleSize 	!= undefined) ? conf.bubbleSize 	: 	(scope.bubbleSize 	!= undefined) 	?  scope.bubbleSize		: 	ngImageGalleryOpts.bubbleSize;
 						scope.imgBubbles 	 = 	(conf.imgBubbles 	!= undefined) ? conf.imgBubbles 	: 	(scope.imgBubbles 	!= undefined) 	?  scope.imgBubbles		: 	ngImageGalleryOpts.imgBubbles;

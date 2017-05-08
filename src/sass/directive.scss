@@ -20,58 +20,74 @@
 			visibility: hidden;
 			clear:both;
 		}
+		
 
-		.thumb{
-			float:left;
-			overflow:hidden;
-			background-size:cover;
-			background-position:center center;
-			cursor: pointer;
-			background-color: $thumb-background-color;
+		.thumb-wrapper {
 			position: relative;
+			float: left;
+			text-align: center;
 
-			&:not(:last-child){
-				margin-right: 5px;
-				margin-bottom: 5px;
+			.thumb {
+				overflow: hidden;
+				background-size: cover;
+				background-position: center center;
+				cursor: pointer;
+				background-color: $thumb-background-color;
+				//position: relative;
+
+				&:not(:last-child) {
+					margin-right: 5px;
+					margin-bottom: 5px;
+				}
+
+				> .loader {
+					position: absolute;
+					left: 10%;
+					top: 10%;
+					right: 10%;
+					bottom: 10%;
+					animation: thumb-load 1.4s infinite linear;
+					transform: translateZ(0);
+
+					@keyframes thumb-load {
+						0% {
+							transform: rotate(0deg);
+						}
+						100% {
+							transform: rotate(360deg);
+						}
+					}
+
+					&:before {
+						width: 50%;
+						height: 50%;
+						background: #ccc;
+						border-radius: 100% 0 0 0;
+						position: absolute;
+						top: 0;
+						left: 0;
+						content: '';
+					}
+					&:after {
+						background: $thumb-background-color;
+						width: 75%;
+						height: 75%;
+						border-radius: 50%;
+						content: '';
+						margin: auto;
+						position: absolute;
+						top: 0;
+						left: 0;
+						bottom: 0;
+						right: 0;
+					}
+				}
+
 			}
 
-			>.loader{
-				position: absolute;
-				left: 10%;
-				top: 10%;
-				right: 10%;
-				bottom: 10%;
-				animation: thumb-load 1.4s infinite linear;
-				transform: translateZ(0);
-
-				@keyframes thumb-load{
-					0% {transform: rotate(0deg);}
-					100% {transform: rotate(360deg);}
-				}
-
-				&:before{
-					width: 50%;
-					height: 50%;
-					background: #ccc;
-					border-radius: 100% 0 0 0;
-					position: absolute;
-					top: 0;
-					left: 0;
-					content: '';
-				}
-				&:after{
-					background: $thumb-background-color;
-					width: 75%;
-					height: 75%;
-					border-radius: 50%;
-					content: '';
-					margin: auto;
-					position: absolute;
-					top: 0;
-					left: 0;
-					bottom: 0;
-					right: 0;
-				}
+			.caption {
+				display: block;
+				font-size: 80% !important;
 			}
 		}
 	}
